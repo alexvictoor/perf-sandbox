@@ -19,29 +19,30 @@ public class BranchPrediction {
 
         for (int i = 0; i < 20; i++) {
             long start = nanoTime();
-            for (int j = 0; j < 10000; j++) {
-                /*if (j % 2 == 0) {
-                    cos(j);
-                } else {
-                    sin(j);
-                }*/
-                if ((j & 1) == 0) {
+            for (int j = 0; j < 16384; j++) {
+                if (j % 2 == 0) {
                     cos(j);
                 } else {
                     sin(j);
                 }
+                /*if ((j & 1) == 0) {
+                    cos(j);
+                } else {
+                    sin(j);
+                }*/
             }
             long end = nanoTime();
             System.out.println("Naive test: " + (end-start) + " ns");
             start = nanoTime();
-            for (int j = 0; j < 5000; j++) {
-                cos(j * 2);
-                sin(j * 2 + 1);
+            for (int j = 0; j < 16384; j++) {
+                if ((8192 & j) == 0) {
+                    cos(j*2);
+                    sin(j*2+1);
+                }
             }
             end = nanoTime();
             System.out.println("Optim test: " + (end-start) + " ns");
-
-
+            System.out.println(4096 * 4);
         }
 
     }

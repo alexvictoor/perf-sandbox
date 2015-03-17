@@ -17,6 +17,9 @@ public class BranchPrediction {
 
     public static void main(String[] args) throws Exception {
 
+        long naive = 0;
+        long optim = 0;
+
         for (int i = 0; i < 20; i++) {
             long start = nanoTime();
             for (int j = 0; j < 16384; j++) {
@@ -32,7 +35,7 @@ public class BranchPrediction {
                 }*/
             }
             long end = nanoTime();
-            System.out.println("Naive test: " + (end-start) + " ns");
+            naive += (end-start);
             start = nanoTime();
             for (int j = 0; j < 16384; j++) {
                 if ((8192 & j) == 0) {
@@ -41,9 +44,11 @@ public class BranchPrediction {
                 }
             }
             end = nanoTime();
-            System.out.println("Optim test: " + (end-start) + " ns");
-            System.out.println(4096 * 4);
+            optim += (end-start);
         }
+
+        System.out.println("Naive test: " + naive + " ns");
+        System.out.println("Optim test: " + optim + " ns");
 
     }
 

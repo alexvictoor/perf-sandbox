@@ -7,32 +7,82 @@
         </encoder>
     </appender>
 
+
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>c:/work/temp/logback10.log</file>
+        <file>${java.io.tmpdir}/perf-test.logs</file>
         <append>false</append>
         <encoder>
-            <pattern>%msg%n</pattern>
+            <pattern>%d %msg%n</pattern>
         </encoder>
     </appender>
 
-    <appender name  = "VANILLA-CHRONICLE"
+    <appender name  = "BIN-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
-        <path>c:/work/temp/raw-bin-indexed-chronicle10</path>
-        <formatMessage>false</formatMessage>
-        <includeCallerData>false</includeCallerData>
-        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+        <path>${java.io.tmpdir}/perf-test-bin-chronicle</path>
+     </appender>
+
+    <appender name  = "TXT-CHRONICLE"
+              class = "net.openhft.chronicle.logger.logback.TextIndexedChronicleAppender">
+        <path>${java.io.tmpdir}/perf-test-txt-chronicle</path>
+     </appender>
+
+    <appender name="FILE2" class="ch.qos.logback.core.FileAppender">
+        <file>${java.io.tmpdir}/perf-test2.logs</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%d %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name  = "BIN-CHRONICLE2"
+              class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
+        <path>${java.io.tmpdir}/perf-test-bin-chronicle2</path>
 
     </appender>
 
-    <!--
-    <logger name="com.github" >
-        <appender-ref ref="VANILLA-CHRONICLE"/>
+    <appender name  = "TXT-CHRONICLE2"
+              class = "net.openhft.chronicle.logger.logback.TextIndexedChronicleAppender">
+        <path>${java.io.tmpdir}/perf-test-txt-chronicle2</path>
+    </appender>
+
+
+
+    <logger name="FILE-ALONE" level="DEBUG"  additivity="false">
+        <appender-ref ref="FILE"/>
     </logger>
--->
+
+    <logger name="BIN-CHRONICLE-ALONE" level="DEBUG"  additivity="false">
+        <appender-ref ref="BIN-CHRONICLE"/>
+    </logger>
+
+    <logger name="TXT-CHRONICLE-ALONE" level="DEBUG"  additivity="false">
+        <appender-ref ref="TXT-CHRONICLE"/>
+    </logger>
+
+    <logger name="FILE-FILE" level="DEBUG"  additivity="false">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="FILE2"/>
+    </logger>
+
+    <logger name="FILE-BIN"  level="DEBUG" additivity="false">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="BIN-CHRONICLE"/>
+    </logger>
+
+    <logger name="FILE-TXT" level="DEBUG"  additivity="false">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="TXT-CHRONICLE"/>
+    </logger>
+
+    <logger name="BIN-BIN" level="DEBUG"  additivity="false">
+        <appender-ref ref="BIN-CHRONICLE"/>
+        <appender-ref ref="BIN-CHRONICLE2"/>
+    </logger>
+
+
 
     <root level="DEBUG">
-       <appender-ref ref="VANILLA-CHRONICLE" />
-       <!--<appender-ref ref="FILE" />-->
+      <appender-ref ref="STDOUT" />
    </root>
 
 </configuration>

@@ -58,7 +58,7 @@ public class LogbackTestWithoutSerialization {
         System.out.println(loggerName + ": test took " + stopwatch);
         if (!dryRun) {
             try {
-                FileOutputStream stream = new FileOutputStream(loggerName + ".micro.bench", false);
+                FileOutputStream stream = new FileOutputStream("target/" + loggerName + ".micro.bench", false);
                 histogram.outputPercentileDistribution(new PrintStream(stream, true), 1D);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

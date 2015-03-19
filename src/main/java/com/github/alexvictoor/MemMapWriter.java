@@ -4,9 +4,7 @@ import com.google.common.base.Stopwatch;
 import com.google.common.base.Throwables;
 import org.HdrHistogram.Histogram;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
@@ -24,17 +22,15 @@ public class MemMapWriter {
 
             //long bufferSize= 8*1000;
             Histogram bufferHistogram = new Histogram(5);
-            long beforeMap = System.currentTimeMillis();
+            Histogram putHistogram = new Histogram(5);
+            long beforeMap = System.nanoTime();
             MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_WRITE, 0, bufferSize);
-            long afterMap = System.currentTimeMillis();
+            long afterMap = System.nanoTime();
             bufferHistogram.recordValue(afterMap-beforeMap);
 
             int start = 0;
             long counter = 1;
-            long HUNDREDK = 100000;
             long startWriting = System.currentTimeMillis();
-            //long noOfMessage = HUNDREDK * 10 * 10;
-            //long noOfMessage = 1;
             for (; ; ) {
                 if (!mem.hasRemaining()) {
                     start += mem.position();
@@ -44,7 +40,9 @@ public class MemMapWriter {
                     bufferHistogram.recordValue(afterMap-beforeMap);
 
                 }
+                long beforePut = System.nanoTime();
                 mem.putLong(counter);
+                putHistogram.recordValue(System.nanoTime() - beforePut);
                 counter++;
                 if (counter > nbLongs)
                     break;
@@ -56,6 +54,16 @@ public class MemMapWriter {
             System.out.println("mean " + bufferHistogram.getMean());
             System.out.println("Buffer size (byte): " + bufferSize);
             System.out.println(String.format("No Of Message %s , Time %s ms", nbLongs, (System.currentTimeMillis() - startWriting)));
+
+            try {
+                FileOutputStream stream = new FileOutputStream("target/mmapbuffer." + bufferSize + ".nano.bench", false);
+                bufferHistogram.outputPercentileDistribution(new PrintStream(stream, true), 1D);
+                stream = new FileOutputStream("target/mmapput." + bufferSize + ".nano.bench", false);
+                putHistogram.outputPercentileDistribution(new PrintStream(stream, true), 1D);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
         } catch (IOException ex) {
             throw Throwables.propagate(ex);
         }

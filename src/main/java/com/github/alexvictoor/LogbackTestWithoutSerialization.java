@@ -4,13 +4,15 @@ import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
 import net.openhft.lang.model.constraints.MaxSize;
 import org.HdrHistogram.Histogram;
-import org.junit.Before;
-import org.junit.Test;
 import org.slf4j.Logger;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class LogbackTest {
+public class LogbackTestWithoutSerialization {
 
     private Logger logger;
     private String fakeDataTxt;
@@ -26,22 +28,24 @@ public class LogbackTest {
                 "BIN-BIN"
             };
 
-    @Before
-    public void setUp() throws Exception {
+    public static void main(String[] args) {
 
+        new LogbackTestWithoutSerialization().bench();
+    }
+
+    public void bench() {
         fakeDataTxt = Strings.repeat("*", 1500);
         fakeMsgPattern = "Blabla - {} - {}";
-    }
 
-    @Test
-    public void testWithoutSerialization() throws Exception {
         for (int i=0; i<2; i++)
+            for (String loggerName : loggerNames) {
+                runTestWithoutSerialization(loggerName, true);
+            }
         for (String loggerName : loggerNames) {
-            runTestWithoutSerialization(loggerName);
-        }
-    }
+            runTestWithoutSerialization(loggerName, false);
+        }}
 
-    private void runTestWithoutSerialization(String loggerName) {
+    private void runTestWithoutSerialization(String loggerName, boolean dryRun) {
         System.out.println("-------------------------- " + loggerName + " ------------------------------");
         logger = getLogger(loggerName);
         Histogram histogram = new Histogram(5);
@@ -49,10 +53,17 @@ public class LogbackTest {
         for (int i = 0; i < 100000; i++) {
             long start = System.nanoTime();
             logger.info(fakeMsgPattern, i, fakeDataTxt);
-            histogram.recordValue(System.nanoTime() - start);
+            histogram.recordValue((System.nanoTime() - start)/1000);
         }
         System.out.println(loggerName + ": test took " + stopwatch);
-        histogram.outputPercentileDistribution(System.out, 1D);
+        if (!dryRun) {
+            try {
+                FileOutputStream stream = new FileOutputStream(loggerName + ".micro.bench", false);
+                histogram.outputPercentileDistribution(new PrintStream(stream, true), 1D);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
         System.out.println("-------------------------- end test for " + loggerName + " ------------------------------");
     }
 

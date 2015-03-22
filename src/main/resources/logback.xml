@@ -74,6 +74,11 @@
         <appender-ref ref="TXT-CHRONICLE"/>
     </logger>
 
+    <logger name="BIN-TXT" level="DEBUG"  additivity="false">
+        <appender-ref ref="BIN-CHRONICLE"/>
+        <appender-ref ref="TXT-CHRONICLE"/>
+    </logger>
+
     <logger name="BIN-BIN" level="DEBUG"  additivity="false">
         <appender-ref ref="BIN-CHRONICLE"/>
         <appender-ref ref="BIN-CHRONICLE2"/>

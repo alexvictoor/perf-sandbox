@@ -25,6 +25,7 @@ public class LogbackTestWithoutSerialization {
                 "FILE-FILE",
                 "FILE-BIN",
                 "FILE-TXT",
+                "BIN-TXT",
                 "BIN-BIN"
             };
 

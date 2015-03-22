@@ -8,12 +8,14 @@ import net.openhft.lang.model.Byteable;
 import net.openhft.lang.model.DataValueClasses;
 import net.openhft.lang.model.constraints.MaxSize;
 import org.HdrHistogram.Histogram;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 
+@Ignore
 public class LogTest {
 
     private static final Logger logger = LoggerFactory.getLogger(LogTest.class);

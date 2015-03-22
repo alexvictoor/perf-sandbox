@@ -13,53 +13,45 @@ import java.nio.file.Path;
 public class MemMapWriter {
 
 
-    public void writeLongs(long nbLongs, long bufferSize) {
+    public void writeLongs(long nbLongs, long bufferSize, long batchSize) {
         try {
-            File f = new File("c:/work/temp/mapped-buff-"+ bufferSize +".txt");
+            File f = new File("c:/work/temp/mapped-buff-"+ bufferSize +"-"+ batchSize +".txt");
             f.delete();
 
             FileChannel fc = new RandomAccessFile(f, "rw").getChannel();
-
-            //long bufferSize= 8*1000;
-            Histogram bufferHistogram = new Histogram(5);
-            Histogram putHistogram = new Histogram(5);
-            long beforeMap = System.nanoTime();
-            MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_WRITE, 0, bufferSize);
-            long afterMap = System.nanoTime();
-            bufferHistogram.recordValue(afterMap-beforeMap);
+            Histogram histogram = new Histogram(5);
+            MappedByteBuffer mem = null; //fc.map(FileChannel.MapMode.READ_WRITE, 0, bufferSize);
 
             int start = 0;
             long counter = 1;
             long startWriting = System.currentTimeMillis();
             for (; ; ) {
-                if (!mem.hasRemaining()) {
-                    start += mem.position();
-                    beforeMap = System.nanoTime();
-                    mem = fc.map(FileChannel.MapMode.READ_WRITE, start, bufferSize);
-                    afterMap = System.nanoTime();
-                    bufferHistogram.recordValue(afterMap-beforeMap);
-
+                long beforeBatch = System.nanoTime();
+                for (int i = 0; i < batchSize; i++) {
+                    if (mem == null) {
+                        mem = fc.map(FileChannel.MapMode.READ_WRITE, start, bufferSize);
+                    }
+                    if (!mem.hasRemaining()) {
+                        start += mem.position();
+                        mem = fc.map(FileChannel.MapMode.READ_WRITE, start, bufferSize);
+                    }
+                    mem.putLong(counter);
+                    counter++;
                 }
-                long beforePut = System.nanoTime();
-                mem.putLong(counter);
-                putHistogram.recordValue(System.nanoTime() - beforePut);
-                counter++;
+                histogram.recordValue(System.nanoTime() - beforeBatch);
                 if (counter > nbLongs)
                     break;
             }
 
-            //bufferHistogram.outputPercentileDistribution(System.out, 1D);
             System.out.println("---------------------------------------------------------------------------");
-            System.out.println("map 90 percentile " + bufferHistogram.getValueAtPercentile(0.90));
-            System.out.println("mean " + bufferHistogram.getMean());
+            System.out.println("map 90 percentile " + histogram.getValueAtPercentile(0.90));
+            System.out.println("mean " + histogram.getMean());
             System.out.println("Buffer size (byte): " + bufferSize);
             System.out.println(String.format("No Of Message %s , Time %s ms", nbLongs, (System.currentTimeMillis() - startWriting)));
 
             try {
-                FileOutputStream stream = new FileOutputStream("target/mmapbuffer." + bufferSize + ".nano.bench", false);
-                bufferHistogram.outputPercentileDistribution(new PrintStream(stream, true), 1D);
-                stream = new FileOutputStream("target/mmapput." + bufferSize + ".nano.bench", false);
-                putHistogram.outputPercentileDistribution(new PrintStream(stream, true), 1D);
+                FileOutputStream stream = new FileOutputStream("target/mmapbuffer." + bufferSize + "." + batchSize + ".nano.bench", false);
+                histogram.outputPercentileDistribution(new PrintStream(stream, true), 1D);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -77,19 +69,19 @@ public class MemMapWriter {
         long nbLongs = HUNDREDK * 10 * 10;
 
         // warm up
-        writer.writeLongs(nbLongs, 20000);
+        writer.writeLongs(nbLongs, 20000, 2048);
 
-        writer.writeLongs(nbLongs, 512);
-        writer.writeLongs(nbLongs, 1024);
-        writer.writeLongs(nbLongs, 2048);
-        writer.writeLongs(nbLongs, 4096);
-        writer.writeLongs(nbLongs, 4096 * 4);
-        writer.writeLongs(nbLongs, 4096 * 5);
-        writer.writeLongs(nbLongs, 4096 * 8);
-        writer.writeLongs(nbLongs, 4096 * 16);
-        writer.writeLongs(nbLongs, 1024 * 1024 * 64);
-        writer.writeLongs(nbLongs, 1024 * 1024 * 100);
-        writer.writeLongs(nbLongs, 1024 * 1024 * 120);
+        writer.writeLongs(nbLongs, 512, 2048);
+        writer.writeLongs(nbLongs, 1024, 2048);
+        writer.writeLongs(nbLongs, 2048, 2048);
+        writer.writeLongs(nbLongs, 4096, 2048);
+        writer.writeLongs(nbLongs, 4096 * 4, 2048);
+        writer.writeLongs(nbLongs, 4096 * 5, 2048);
+        writer.writeLongs(nbLongs, 4096 * 8, 2048);
+        writer.writeLongs(nbLongs, 4096 * 16, 2048);
+        writer.writeLongs(nbLongs, 1024 * 1024 * 64, 2048);
+        writer.writeLongs(nbLongs, 1024 * 1024 * 100, 2048);
+        writer.writeLongs(nbLongs, 1024 * 1024 * 120, 2048);
 
     }
 

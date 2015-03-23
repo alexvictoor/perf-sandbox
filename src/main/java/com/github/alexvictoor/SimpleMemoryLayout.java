@@ -7,11 +7,8 @@ import org.openjdk.jmh.annotations.*;
 public class SimpleMemoryLayout {
 
 
-    //public static final int NB_PAIRS = 10000;
     public static final int ARRAY_SIZE = 1000000;
     public static final int NB_ARRAY = 50;
-    public static final int NB_RUN = 5;
-
     public long[][] longs;
 
 
@@ -37,6 +34,8 @@ public class SimpleMemoryLayout {
             for (int j = 0; j < ARRAY_SIZE; j++)
 
                 result += longs[i][j];
+
+
 
         return result;
     }

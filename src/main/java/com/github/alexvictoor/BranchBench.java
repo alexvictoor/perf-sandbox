@@ -6,11 +6,11 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
-@BenchmarkMode(Mode.AverageTime)
+//@BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 public class BranchBench {
 
-    public static final int SIZE = 4 * 1024;
+    public static final int SIZE = 256 * 1024;
     private int[] data;
 
     @Setup

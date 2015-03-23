@@ -5,19 +5,18 @@ import org.HdrHistogram.Histogram;
 
 import java.io.*;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
-public class FileChannelWriter {
+public class FileChannelWriterBlock {
 
 
     public void writeLongs(long nbLongs, int batchSize) {
         try {
-            File f = new File("c:/work/temp/filechannel-bench-" + nbLongs + "-" + batchSize + "-.txt");
+            File f = new File("c:/work/temp/filechannel-block-bench-" + nbLongs + "-" + batchSize + "-.txt");
             f.delete();
 
             FileChannel fc = new RandomAccessFile(f, "rw").getChannel();
-            ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
+            ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES * batchSize);
 
             Histogram putHistogram = new Histogram(5);
 
@@ -27,10 +26,10 @@ public class FileChannelWriter {
                 long beforeWrite = System.nanoTime();
                 for (int i = 0; i < batchSize; i++) {
                     buffer.putLong(counter);
-                    fc.write(buffer);
-                    buffer.clear();
                     counter++;
                 }
+                fc.write(buffer);
+                buffer.clear();
                 putHistogram.recordValue(System.nanoTime() - beforeWrite);
                 if (counter > nbLongs)
                     break;
@@ -43,7 +42,7 @@ public class FileChannelWriter {
 
             try {
 
-                FileOutputStream stream = new FileOutputStream("target/filechannel.nano." + nbLongs + "." + batchSize + "-bench", false);
+                FileOutputStream stream = new FileOutputStream("target/filechannelblock.nano." + nbLongs + "." + batchSize + "-bench", false);
                 putHistogram.outputPercentileDistribution(new PrintStream(stream, true), 1D);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -57,7 +56,7 @@ public class FileChannelWriter {
 
     public static void main(String[] args) throws Exception {
 
-        FileChannelWriter writer = new FileChannelWriter();
+        FileChannelWriterBlock writer = new FileChannelWriterBlock();
         long HUNDREDK=100000;
         long nbLongs = HUNDREDK * 10 * 10;
 

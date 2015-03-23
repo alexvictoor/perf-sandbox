@@ -20,7 +20,7 @@ public class MemMapWriter {
 
             FileChannel fc = new RandomAccessFile(f, "rw").getChannel();
             Histogram histogram = new Histogram(5);
-            MappedByteBuffer mem = null; //fc.map(FileChannel.MapMode.READ_WRITE, 0, bufferSize);
+            MappedByteBuffer mem = fc.map(FileChannel.MapMode.READ_WRITE, 0, bufferSize);
 
             int start = 0;
             long counter = 1;
@@ -28,9 +28,9 @@ public class MemMapWriter {
             for (; ; ) {
                 long beforeBatch = System.nanoTime();
                 for (int i = 0; i < batchSize; i++) {
-                    if (mem == null) {
+                    /*if (mem == null) {
                         mem = fc.map(FileChannel.MapMode.READ_WRITE, start, bufferSize);
-                    }
+                    }*/
                     if (!mem.hasRemaining()) {
                         start += mem.position();
                         mem = fc.map(FileChannel.MapMode.READ_WRITE, start, bufferSize);

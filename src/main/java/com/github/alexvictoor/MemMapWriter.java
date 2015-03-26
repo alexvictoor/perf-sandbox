@@ -15,7 +15,7 @@ public class MemMapWriter {
 
     public void writeLongs(long nbLongs, long bufferSize, long batchSize) {
         try {
-            File f = new File("c:/work/temp/mapped-buff-"+ bufferSize +"-"+ batchSize +".txt");
+            File f = new File("target/mapped-buff-"+ bufferSize +"-"+ batchSize +".txt");
             f.delete();
 
             FileChannel fc = new RandomAccessFile(f, "rw").getChannel();
@@ -38,7 +38,7 @@ public class MemMapWriter {
                     mem.putLong(counter);
                     counter++;
                 }
-                histogram.recordValue(System.nanoTime() - beforeBatch);
+                histogram.recordValue((System.nanoTime() - beforeBatch)/1000);
                 if (counter > nbLongs)
                     break;
             }
@@ -74,14 +74,14 @@ public class MemMapWriter {
         writer.writeLongs(nbLongs, 512, 2048);
         writer.writeLongs(nbLongs, 1024, 2048);
         writer.writeLongs(nbLongs, 2048, 2048);
-        writer.writeLongs(nbLongs, 4096, 2048);
+        /*writer.writeLongs(nbLongs, 4096, 2048);
         writer.writeLongs(nbLongs, 4096 * 4, 2048);
         writer.writeLongs(nbLongs, 4096 * 5, 2048);
         writer.writeLongs(nbLongs, 4096 * 8, 2048);
-        writer.writeLongs(nbLongs, 4096 * 16, 2048);
-        writer.writeLongs(nbLongs, 1024 * 1024 * 64, 2048);
-        writer.writeLongs(nbLongs, 1024 * 1024 * 100, 2048);
-        writer.writeLongs(nbLongs, 1024 * 1024 * 120, 2048);
+        writer.writeLongs(nbLongs, 4096 * 16, 2048);*/
+        writer.writeLongs(nbLongs, 1024 * 1024 * 96, 2048);
+        /*writer.writeLongs(nbLongs, 1024 * 1024 * 100, 2048);
+        writer.writeLongs(nbLongs, 1024 * 1024 * 120, 2048);*/
 
     }
 

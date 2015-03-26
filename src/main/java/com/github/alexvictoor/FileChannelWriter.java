@@ -13,7 +13,7 @@ public class FileChannelWriter {
 
     public void writeLongs(long nbLongs, int batchSize) {
         try {
-            File f = new File("c:/work/temp/filechannel-bench-" + nbLongs + "-" + batchSize + "-.txt");
+            File f = new File("target/filechannel-bench-" + nbLongs + "-" + batchSize + "-.txt");
             f.delete();
 
             FileChannel fc = new RandomAccessFile(f, "rw").getChannel();
@@ -32,7 +32,7 @@ public class FileChannelWriter {
                     buffer.clear();
                     counter++;
                 }
-                putHistogram.recordValue(System.nanoTime() - beforeWrite);
+                putHistogram.recordValue((System.nanoTime() - beforeWrite)/1000);
                 if (counter > nbLongs)
                     break;
             }

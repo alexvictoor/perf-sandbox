@@ -43,7 +43,6 @@ public class LogTest {
     @Test
     public void testObject() throws Exception {
         for (int i = 0; i < 1000; i++) {
-
             logger.info("hello {}", System.currentTimeMillis());
         }
         Stopwatch stopwatch = Stopwatch.createStarted();

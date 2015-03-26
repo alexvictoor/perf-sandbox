@@ -28,12 +28,14 @@ public class FileChannelWriterBlock {
                     buffer.putLong(counter);
                     counter++;
                 }
+                buffer.flip();
                 fc.write(buffer);
                 buffer.clear();
                 putHistogram.recordValue(System.nanoTime() - beforeWrite);
                 if (counter > nbLongs)
                     break;
             }
+            fc.close();
 
             System.out.println("---------------------------------------------------------------------------");
             System.out.println("map 90 percentile " + putHistogram.getValueAtPercentile(0.90));
@@ -57,8 +59,7 @@ public class FileChannelWriterBlock {
     public static void main(String[] args) throws Exception {
 
         FileChannelWriterBlock writer = new FileChannelWriterBlock();
-        long HUNDREDK=100000;
-        long nbLongs = HUNDREDK * 10 * 10;
+        long nbLongs = 10 * 1024 * 1024;
 
         // warm up
         writer.writeLongs(nbLongs, 2048);

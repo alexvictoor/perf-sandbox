@@ -27,6 +27,7 @@ public class FileChannelWriter {
                 long beforeWrite = System.nanoTime();
                 for (int i = 0; i < batchSize; i++) {
                     buffer.putLong(counter);
+                    buffer.flip();
                     fc.write(buffer);
                     buffer.clear();
                     counter++;
@@ -58,8 +59,8 @@ public class FileChannelWriter {
     public static void main(String[] args) throws Exception {
 
         FileChannelWriter writer = new FileChannelWriter();
-        long HUNDREDK=100000;
-        long nbLongs = HUNDREDK * 10 * 10;
+        long nbLongs = 10 * 1024 * 1024;
+
 
         // warm up
         writer.writeLongs(nbLongs, 2048);

@@ -14,8 +14,19 @@ public class BinVsText {
         long ms = now.getTime();
         byte[] nowBinBytes = longToBytes(ms);
         System.out.println(now+ " "+ Charset.defaultCharset());
-        System.out.println("binaire " + toHexString(nowBinBytes) + " " + nowBinBytes.length );
-        System.out.println("binaire " + toHexString(nowStringBytes) + " " + nowStringBytes.length );
+        System.out.println("binary " + toHexString(nowBinBytes) + " " + nowBinBytes.length );
+        System.out.println("string " + toHexString(nowStringBytes) + " " + nowStringBytes.length );
+
+        byte[] priceStringBytes = "Isin=FR0000120271 Bid=46.575 Ask=46.590".getBytes();
+        ByteBuffer buffer = ByteBuffer.allocate(28);
+        buffer.put("FR0000120271".getBytes());
+        buffer.putDouble(46.575);
+        buffer.putDouble(46.590);
+        buffer.flip();
+        byte[] priceBinBytes = buffer.array();
+        System.out.println("binary " + toHexString(priceBinBytes) + " " + priceBinBytes.length );
+        System.out.println("string " + toHexString(priceStringBytes) + " " + priceStringBytes.length );
+
     }
 
     public static String toHexString(byte[] bytes) {

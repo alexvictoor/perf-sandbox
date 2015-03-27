@@ -73,7 +73,7 @@ public class MemMapWriter {
 
         writer.writeLongs(nbLongs, 512, 2048);
         writer.writeLongs(nbLongs, 1024, 2048);
-        writer.writeLongs(nbLongs, 2048, 2048);
+        writer.writeLongs(nbLongs, 2048 * 8, 2048);
         /*writer.writeLongs(nbLongs, 4096, 2048);
         writer.writeLongs(nbLongs, 4096 * 4, 2048);
         writer.writeLongs(nbLongs, 4096 * 5, 2048);

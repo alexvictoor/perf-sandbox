@@ -9,7 +9,7 @@
 
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>${java.io.tmpdir}/perf-test.logs</file>
+        <file>target/perf-test.logs</file>
         <append>false</append>
         <encoder>
             <pattern>%d %msg%n</pattern>
@@ -18,16 +18,16 @@
 
     <appender name  = "BIN-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
-        <path>${java.io.tmpdir}/perf-test-bin-chronicle</path>
+        <path>target/perf-test-bin-chronicle</path>
      </appender>
 
     <appender name  = "TXT-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.TextIndexedChronicleAppender">
-        <path>${java.io.tmpdir}/perf-test-txt-chronicle</path>
+        <path>target/perf-test-txt-chronicle</path>
      </appender>
 
     <appender name="FILE2" class="ch.qos.logback.core.FileAppender">
-        <file>${java.io.tmpdir}/perf-test2.logs</file>
+        <file>target/perf-test2.logs</file>
         <append>false</append>
         <encoder>
             <pattern>%d %msg%n</pattern>
@@ -36,13 +36,13 @@
 
     <appender name  = "BIN-CHRONICLE2"
               class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
-        <path>${java.io.tmpdir}/perf-test-bin-chronicle2</path>
+        <path>target/perf-test-bin-chronicle2</path>
 
     </appender>
 
     <appender name  = "TXT-CHRONICLE2"
               class = "net.openhft.chronicle.logger.logback.TextIndexedChronicleAppender">
-        <path>${java.io.tmpdir}/perf-test-txt-chronicle2</path>
+        <path>target/perf-test-txt-chronicle2</path>
     </appender>
 
 

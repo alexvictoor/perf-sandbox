@@ -23,7 +23,7 @@ public class BranchBench {
     }
 
     @Benchmark
-    @OperationsPerInvocation(SIZE)
+    //@OperationsPerInvocation(SIZE)
     public int customAbs() {
         int sum = 0;
         for (int x : data) {
@@ -37,7 +37,7 @@ public class BranchBench {
     }
 
     @Benchmark
-    @OperationsPerInvocation(SIZE)
+    //@OperationsPerInvocation(SIZE)
     public int mathAbs() {
         int sum = 0;
         for (int x : data) {

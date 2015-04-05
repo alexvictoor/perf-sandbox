@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -27,6 +28,7 @@ public class TooManyThreads {
     public static void main(String[] args) throws Exception {
         for (int j = 0; j < 20; j++) {
 
+            // Random.ints
             int[] data = new int[NB_TREATMENTS];
             for (int i = 0; i < NB_TREATMENTS; i++) {
                 data[i] = i;
@@ -72,6 +74,17 @@ public class TooManyThreads {
             );
             end = nanoTime();
             System.out.println("stream test took        " + (end-start) + "ns");
+
+            stream = Arrays.stream(data);
+            start = nanoTime();
+            double sum = stream.parallel().mapToDouble(Math::cos).sum();
+            end = nanoTime();
+            System.out.println("[clean //] sum stream test took        " + (end-start) + "ns");
+            stream = Arrays.stream(data);
+            start = nanoTime();
+            sum = stream.mapToDouble(Math::cos).sum();
+            end = nanoTime();
+            System.out.println("[clean   ] sum stream test took        " + (end-start) + "ns");
 
         }
     }

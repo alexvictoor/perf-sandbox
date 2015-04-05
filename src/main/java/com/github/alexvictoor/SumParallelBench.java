@@ -21,10 +21,8 @@ public class SumParallelBench {
     @Setup
     public void init() {
         Random rand = new Random();
-        data = new int[SIZE];
-        for (int i = 0; i < SIZE; i++) {
-            data[i] = rand.nextInt();
-        }
+        IntStream stream = rand.ints(SIZE);
+        data = stream.toArray();
     }
 
     @Benchmark

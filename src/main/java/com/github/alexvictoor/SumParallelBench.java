@@ -1,39 +1,37 @@
 package com.github.alexvictoor;
 
-
 import org.openjdk.jmh.annotations.*;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static java.util.Arrays.stream;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openjdk.jmh.annotations.Level.Invocation;
+import static org.openjdk.jmh.annotations.Mode.AverageTime;
+import static org.openjdk.jmh.annotations.Scope.Benchmark;
 
-@State(Scope.Benchmark)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
-@BenchmarkMode(Mode.AverageTime)
+@State(Benchmark)
+@OutputTimeUnit(MILLISECONDS)
+@BenchmarkMode(AverageTime)
 public class SumParallelBench {
 
     public static final int SIZE = 10 * 1024 * 1024;
-    private int[] data;
+    private IntStream stream;
 
-    @Setup
+    @Setup(Invocation)
     public void init() {
         Random rand = new Random();
-        IntStream stream = rand.ints(SIZE);
-        data = stream.toArray();
+        // random stream of 0 and 1
+        stream = rand.ints(SIZE, 0, 2);
     }
 
     @Benchmark
     public Integer sumValues() {
-        IntStream stream = stream(data);
         return stream.sum();
     }
 
     @Benchmark
     public Integer sumValuesInParallel() {
-        IntStream stream = stream(data);
         return stream.parallel().sum();
     }
 
